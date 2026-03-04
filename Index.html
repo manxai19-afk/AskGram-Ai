@@ -1,123 +1,64 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AskGram AI - World Class Build</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        .page { display: none; animation: fade .3s ease; }
-        .active { display: block; }
-        @keyframes fade { from {opacity:0} to {opacity:1} }
-        .glow { box-shadow: 0 0 20px rgba(168,85,247,0.3); }
-        .loading { animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0%{opacity:.4} 50%{opacity:1} 100%{opacity:.4} }
-    </style>
-</head>
-<body class="bg-black text-white font-sans">
+<script>
+const API_KEY = "YOUR_GOOGLE_API_KEY";
 
-    <header class="flex justify-between items-center px-5 py-4 border-b border-gray-800 sticky top-0 bg-black z-50">
-        <h1 class="text-2xl font-extrabold bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent italic">AskGram</h1>
-        <div class="flex gap-6 text-gray-400 text-xl">
-            <i class="fa-regular fa-heart"></i>
-            <i class="fa-brands fa-facebook-messenger"></i>
-        </div>
-    </header>
+let isLoading = false;
 
-    <main class="pb-24">
-        <div id="home" class="page active">
-            <div class="p-5 m-4 bg-gray-900 rounded-3xl border border-gray-800 glow">
-                <h2 class="text-[10px] font-bold text-gray-500 mb-3 uppercase tracking-widest text-center">AI Video Studio</h2>
-                <textarea id="prompt" class="w-full bg-black border border-gray-800 rounded-2xl p-4 text-sm focus:border-purple-500 outline-none transition" rows="3" placeholder="Describe your viral video idea..."></textarea>
-                <button onclick="generateMagic()" id="magicBtn" class="w-full mt-4 bg-gradient-to-r from-purple-600 to-pink-600 py-4 rounded-2xl font-black shadow-lg active:scale-95 transition">
-                    GENERATE MAGIC ✨
-                </button>
-            </div>
-            <div id="feed" class="px-4 space-y-6">
-                <div class="text-center py-10 text-gray-700 italic">No posts yet. Let's create!</div>
-            </div>
-        </div>
+async function openAI() {
+  if(isLoading) return;
+  
+  const idea = document.getElementById("prompt").value.trim();
+  if(!idea) return showMessage("Idea likho pehle!");
 
-        <div id="profile" class="page p-6">
-            <div class="flex items-center gap-5 mb-10">
-                <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-purple-500 to-pink-500 p-1">
-                    <div class="w-full h-full bg-black rounded-full flex items-center justify-center text-3xl font-bold italic">M</div>
-                </div>
-                <div>
-                    <h2 class="text-2xl font-bold">Manan</h2>
-                    <p class="text-gray-500 text-sm">@manan_askgram</p>
-                </div>
-            </div>
-            <div class="bg-gray-900 p-6 rounded-3xl border border-green-900/20 glow">
-                <p class="text-xs text-green-500 font-bold mb-1 tracking-widest uppercase">My Earnings</p>
-                <h3 id="earnings" class="text-4xl font-black font-mono text-white">$0.00</h3>
-                <button class="mt-4 w-full bg-green-600 text-white py-3 rounded-xl font-bold text-sm shadow-lg shadow-green-500/20">Withdraw Cash</button>
-            </div>
-        </div>
-    </main>
+  isLoading = true;
+  document.getElementById("magicBtn").innerText = "Generating...";
+  document.getElementById("magicBtn").disabled = true;
 
-    <nav class="fixed bottom-0 w-full bg-black border-t border-gray-800 flex justify-around py-4 text-2xl z-50">
-        <i onclick="showPage('home')" id="homeIcon" class="fa-solid fa-house cursor-pointer text-white"></i>
-        <i class="fa-solid fa-magnifying-glass text-gray-600"></i>
-        <i class="fa-solid fa-plus-square text-gray-600"></i>
-        <i class="fa-solid fa-clapperboard text-gray-600"></i>
-        <i onclick="showPage('profile')" id="profileIcon" class="fa-solid fa-circle-user cursor-pointer text-gray-600"></i>
-    </nav>
+  try {
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${API_KEY}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: idea }] }]
+        })
+      }
+    );
 
-    <script>
-        let balance = 0.00;
+    const data = await response.json();
 
-        function showPage(pageId) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active');
-            
-            const homeIcon = document.getElementById('homeIcon');
-            const profileIcon = document.getElementById('profileIcon');
-            
-            if(pageId === 'home') {
-                homeIcon.classList.add('text-white');
-                homeIcon.classList.remove('text-gray-600');
-                profileIcon.classList.add('text-gray-600');
-                profileIcon.classList.remove('text-white');
-            } else {
-                profileIcon.classList.add('text-white');
-                profileIcon.classList.remove('text-gray-600');
-                homeIcon.classList.add('text-gray-600');
-                homeIcon.classList.remove('text-white');
-            }
-        }
+    if(!data.candidates){
+      throw new Error("AI failed");
+    }
 
-        function generateMagic() {
-            const prompt = document.getElementById("prompt");
-            const btn = document.getElementById("magicBtn");
-            if(!prompt.value.trim()) return alert("Idea likho!");
+    const result = data.candidates[0].content.parts[0].text;
+    addPost(result);
 
-            btn.innerHTML = "<span class='loading'>AI Thinking... ✨</span>";
-            btn.disabled = true;
+  } catch (err) {
+    showMessage("Server busy ya API error 😢");
+  }
 
-            setTimeout(() => {
-                const feed = document.getElementById("feed");
-                const post = document.createElement("div");
-                post.className = "bg-gray-900 p-5 rounded-3xl border border-gray-800 mb-6 glow";
-                post.innerHTML = `
-                    <p class="text-sm mb-4 text-gray-200">${prompt.value}</p>
-                    <div class="aspect-video bg-black rounded-2xl flex items-center justify-center border border-gray-800">
-                        <span class="text-xs text-gray-600 loading uppercase italic tracking-widest">Video Processing...</span>
-                    </div>
-                `;
-                
-                if(feed.innerText.includes("No posts")) feed.innerHTML = "";
-                feed.prepend(post);
+  isLoading = false;
+  document.getElementById("magicBtn").innerText = "GENERATE MAGIC ✨";
+  document.getElementById("magicBtn").disabled = false;
+}
 
-                balance += 0.50;
-                document.getElementById("earnings").innerText = "$" + balance.toFixed(2);
-                
-                prompt.value = "";
-                btn.innerHTML = "GENERATE MAGIC ✨";
-                btn.disabled = false;
-            }, 2000);
-        }
-    </script>
-</body>
-</html>
+function addPost(text){
+  const feed = document.getElementById("feed");
+  const post = document.createElement("div");
+  post.className = "bg-gray-900 p-5 rounded-2xl border border-gray-800";
+  post.innerHTML = `<p class="text-sm">${text}</p>`;
+  feed.prepend(post);
+}
+
+function showMessage(msg){
+  document.getElementById("messageBox").innerText = msg;
+  document.getElementById("messageBox").classList.remove("hidden");
+  setTimeout(()=>{
+    document.getElementById("messageBox").classList.add("hidden");
+  },2000);
+}
+</script>
+<div id="messageBox" class="hidden fixed bottom-24 left-1/2 -translate-x-1/2 bg-red-600 px-6 py-3 rounded-xl text-sm shadow-lg z-50">
+Message
+</div>
