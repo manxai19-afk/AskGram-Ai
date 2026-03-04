@@ -3,114 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AskGram - World Class AI Social Brand</title>
+    <title>AskGram AI - World Class Build</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .page { display: none; animation: fade .3s ease; }
+        .active { display: block; }
+        @keyframes fade { from {opacity:0} to {opacity:1} }
+        .glow { box-shadow: 0 0 20px rgba(168,85,247,0.3); }
+        .loading { animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0%{opacity:.4} 50%{opacity:1} 100%{opacity:.4} }
+    </style>
 </head>
 <body class="bg-black text-white font-sans">
 
-    <header class="flex justify-between items-center px-4 py-3 border-b border-gray-800 sticky top-0 bg-black z-50">
-        <h1 class="text-2xl font-extrabold bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 bg-clip-text text-transparent italic">AskGram</h1>
-        <div class="flex gap-5 text-xl">
+    <header class="flex justify-between items-center px-5 py-4 border-b border-gray-800 sticky top-0 bg-black z-50">
+        <h1 class="text-2xl font-extrabold bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent italic">AskGram</h1>
+        <div class="flex gap-6 text-gray-400 text-xl">
             <i class="fa-regular fa-heart"></i>
-            <i class="fa-brands fa-facebook-messenger text-blue-400"></i>
+            <i class="fa-brands fa-facebook-messenger"></i>
         </div>
     </header>
 
     <main class="pb-24">
-        <div class="p-4 border-b border-gray-800 bg-gray-900 mx-3 my-4 rounded-3xl shadow-2xl border border-gray-700">
-            <h2 class="text-xs font-bold text-gray-400 mb-3 uppercase tracking-tighter">AI Video & Reel Studio</h2>
-            <textarea id="prompt" class="w-full bg-black border border-gray-700 rounded-2xl p-4 text-sm focus:border-pink-500 outline-none transition" rows="3" placeholder="Describe your viral video idea..."></textarea>
-            <button onclick="generateMagic()" id="magicBtn" class="w-full mt-3 bg-gradient-to-r from-purple-600 to-pink-600 py-4 rounded-2xl font-black shadow-lg shadow-pink-500/20 active:scale-95 transition tracking-widest">
-                GENERATE MAGIC ✨
-            </button>
+        <div id="home" class="page active">
+            <div class="p-5 m-4 bg-gray-900 rounded-3xl border border-gray-800 glow">
+                <h2 class="text-[10px] font-bold text-gray-500 mb-3 uppercase tracking-widest">AI Video Studio</h2>
+                <textarea id="prompt" class="w-full bg-black border border-gray-800 rounded-2xl p-4 text-sm focus:border-purple-500 outline-none transition" rows="3" placeholder="Describe your viral video idea..."></textarea>
+                <button onclick="generateMagic()" id="magicBtn" class="w-full mt-4 bg-gradient-to-r from-purple-600 to-pink-600 py-4 rounded-2xl font-black shadow-lg active:scale-95 transition">
+                    GENERATE MAGIC ✨
+                </button>
+            </div>
+            <div id="feed" class="px-4 space-y-6">
+                <div class="text-center py-10 text-gray-700 italic">No posts yet. Let's create!</div>
+            </div>
         </div>
 
-        <div class="px-5 py-3 flex justify-between items-center bg-gradient-to-r from-green-900/40 to-black border border-green-700/30 mx-3 rounded-2xl">
-            <span class="text-sm font-bold text-green-400"><i class="fa-solid fa-wallet mr-2"></i>AskGram Earnings</span>
-            <span id="earnings" class="font-black text-xl text-white font-mono">$0.00</span>
-        </div>
-
-        <div id="feed" class="mt-6 space-y-6">
-            <div class="px-4 py-10 text-center text-gray-600 italic">
-                Aapki AI posts yahan dikhengi...
+        <div id="profile" class="page p-6">
+            <div class="flex items-center gap-5 mb-10">
+                <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-purple-500 to-pink-500 p-1">
+                    <div class="w-full h-full bg-black rounded-full flex items-center justify-center text-3xl font-bold italic">M</div>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold">Manan</h2>
+                    <p class="text-gray-500 text-sm">@manan_askgram</p>
+                </div>
+            </div>
+            <div class="bg-gray-900 p-6 rounded-3xl border border-green-900/20 glow">
+                <p class="text-xs text-green-500 font-bold mb-1 tracking-widest uppercase">My Earnings</p>
+                <h3 id="earnings" class="text-4xl font-black font-mono text-white">$0.00</h3>
+                <button class="mt-4 w-full bg-green-600 text-white py-3 rounded-xl font-bold text-sm shadow-lg shadow-green-500/20">Withdraw Cash</button>
             </div>
         </div>
     </main>
-
     <nav class="fixed bottom-0 w-full bg-black/90 backdrop-blur-md border-t border-gray-800 flex justify-around py-4 text-2xl z-50">
-        <i class="fa-solid fa-house text-white"></i>
-        <i class="fa-solid fa-magnifying-glass text-gray-500"></i>
-        <i class="fa-solid fa-plus-square text-gray-500"></i>
-        <i class="fa-solid fa-clapperboard text-gray-500"></i>
-        <i class="fa-solid fa-circle-user text-gray-500"></i>
+        <i onclick="showPage('home')" id="homeIcon" class="fa-solid fa-house cursor-pointer text-white"></i>
+        <i class="fa-solid fa-magnifying-glass text-gray-600"></i>
+        <i class="fa-solid fa-plus-square text-gray-600"></i>
+        <i class="fa-solid fa-clapperboard text-gray-600"></i>
+        <i onclick="showPage('profile')" id="profileIcon" class="fa-solid fa-circle-user cursor-pointer text-gray-600"></i>
     </nav>
 
     <script>
         let balance = 0.00;
 
-        function generateMagic() {
-            const promptInput = document.getElementById("prompt");
-            const btn = document.getElementById("magicBtn");
-            const feed = document.getElementById("feed");
-            const earnings = document.getElementById("earnings");
-
-            if(promptInput.value.trim() === "") {
-                alert("Please enter an idea first!");
-                return;
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            
+            // Icon colors switching logic
+            const homeIcon = document.getElementById('homeIcon');
+            const profileIcon = document.getElementById('profileIcon');
+            
+            if(pageId === 'home') {
+                homeIcon.classList.replace('text-gray-600', 'text-white');
+                profileIcon.classList.replace('text-white', 'text-gray-600');
+            } else {
+                profileIcon.classList.replace('text-gray-600', 'text-white');
+                homeIcon.classList.replace('text-white', 'text-gray-600');
             }
+        }
 
-            // Button Loading State
-            btn.innerText = "AI is Creating Magic...";
+        function generateMagic() {
+            const prompt = document.getElementById("prompt");
+            if(!prompt.value.trim()) return alert("Manan, pehle idea likho!");
+
+            const btn = document.getElementById("magicBtn");
+            btn.innerHTML = "<span class='loading italic'>AI Processing... ✨</span>";
             btn.disabled = true;
 
             setTimeout(() => {
-                // Add New Post to Feed
-                const newPost = document.createElement("div");
-                newPost.className = "bg-gray-900 mx-3 p-4 rounded-3xl border border-gray-800 shadow-xl mb-6 scale-up-animation";
-                newPost.innerHTML = `
-                    <div class="flex items-center gap-3 mb-4">
-                        <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-yellow-400 to-fuchsia-600 border-2 border-black"></div>
-                        <div>
-                            <p class="text-sm font-bold">AskGram Creator</p>
-                            <p class="text-[10px] text-gray-500">AI Generated • Just now</p>
-                        </div>
+                const feed = document.getElementById("feed");
+                const post = document.createElement("div");
+                post.className = "bg-gray-900 p-5 rounded-3xl border border-gray-800 mb-6 glow scale-up";
+                post.innerHTML = `
+                    <div class="flex items-center gap-2 mb-3">
+                        <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-yellow-400 to-pink-600"></div>
+                        <span class="text-xs font-bold text-gray-400">AskGram AI Studio</span>
                     </div>
-                    <p class="text-sm text-gray-200 mb-4 leading-relaxed">${promptInput.value}</p>
-                    <div class="aspect-video bg-black rounded-2xl flex flex-col items-center justify-center border border-gray-800">
-                        <i class="fa-solid fa-play text-4xl text-gray-800 mb-2"></i>
-                        <span class="text-xs text-gray-600 font-mono tracking-widest">PROCESSING VIDEO...</span>
-                    </div>
-                    <div class="flex justify-between mt-5 px-2">
-                        <div class="flex gap-6 text-xl">
-                            <i class="fa-regular fa-heart hover:text-red-500 transition"></i>
-                            <i class="fa-regular fa-comment"></i>
-                            <i class="fa-regular fa-paper-plane"></i>
-                        </div>
-                        <i class="fa-solid fa-download text-pink-500"></i>
+                    <p class="text-sm mb-4 text-gray-200">${prompt.value}</p>
+                    <div class="aspect-video bg-black rounded-2xl flex items-center justify-center border border-gray-800">
+                        <span class="text-[10px] text-gray-600 tracking-widest loading uppercase italic">Video Generating... 🎥</span>
                     </div>
                 `;
-
-                // First remove empty message
-                if(feed.children[0].classList.contains('text-center')) feed.innerHTML = "";
                 
-                feed.prepend(newPost);
+                if(feed.innerText.includes("No posts")) feed.innerHTML = "";
+                feed.prepend(post);
 
-                // Update Earnings
-                balance += 0.50; // $0.50 per creation
-                earnings.innerText = "$" + balance.toFixed(2);
-
-                // Reset
-                promptInput.value = "";
-                btn.innerText = "GENERATE MAGIC ✨";
+                // Update Wallet
+                balance += 0.50;
+                document.getElementById("earnings").innerText = "$" + balance.toFixed(2);
+                
+                prompt.value = "";
+                btn.innerHTML = "GENERATE MAGIC ✨";
                 btn.disabled = false;
             }, 2000);
         }
     </script>
-
-    <style>
-        .scale-up-animation { animation: scaleUp 0.4s ease-out; }
-        @keyframes scaleUp { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-    </style>
 </body>
 </html>
