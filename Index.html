@@ -51,6 +51,29 @@ font-size:22px;
 }
 </style>
 </head>
+
+<body>
+
+<div class="reels-container" id="reelsContainer">
+
+<div class="reel">
+<video src="https://www.w3schools.com/html/mov_bbb.mp4" autoplay loop muted></video>
+
+<div class="overlay">
+<h3 class="font-bold">@askgram</h3>
+<p>Welcome to World Class Platform 🔥</p>
+</div>
+
+<div class="side-icons text-white text-center">
+<div ondblclick="like(this)">❤️<br><span>0</span></div>
+<div>💬</div>
+<div>📤</div>
+</div>
+</div>
+
+</div>
+
+<!-- ✅ Script ALWAYS body ke end me -->
 <script>
 
 let videos = document.querySelectorAll("video");
@@ -75,25 +98,6 @@ count.innerText = parseInt(count.innerText)+1;
 }
 
 </script>
+
 </body>
 </html>
-<body>
-
-<div class="reels-container" id="reelsContainer">
-
-<div class="reel">
-<video src="https://www.w3schools.com/html/mov_bbb.mp4" autoplay loop muted></video>
-
-<div class="overlay">
-<h3 class="font-bold">@askgram</h3>
-<p>Welcome to World Class Platform 🔥</p>
-</div>
-
-<div class="side-icons text-white text-center">
-<div ondblclick="like(this)">❤️<br><span>0</span></div>
-<div>💬</div>
-<div>📤</div>
-</div>
-</div>
-
-</div>
