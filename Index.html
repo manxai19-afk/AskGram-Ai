@@ -3,107 +3,97 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AskGram World</title>
+<title>AskGram X</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
 <style>
-body{background:#000;color:#fff;font-family:-apple-system,sans-serif}
-.hidden{display:none}
-.reel{height:100vh;scroll-snap-align:start;position:relative}
-.reels-container{height:100vh;overflow-y:scroll;scroll-snap-type:y mandatory}
-.modal{position:fixed;inset:0;background:rgba(0,0,0,0.8);display:flex;align-items:center;justify-content:center;z-index:999}
+body{
+margin:0;
+background:black;
+overflow:hidden;
+font-family:sans-serif;
+}
+
+.reels-container{
+height:100vh;
+width:100%;
+overflow-y:scroll;
+scroll-snap-type:y mandatory;
+}
+
+.reel{
+height:100vh;
+scroll-snap-align:start;
+position:relative;
+}
+
+video{
+height:100%;
+width:100%;
+object-fit:cover;
+}
+
+.overlay{
+position:absolute;
+bottom:80px;
+left:15px;
+color:white;
+}
+
+.side-icons{
+position:absolute;
+right:15px;
+bottom:120px;
+display:flex;
+flex-direction:column;
+gap:20px;
+font-size:22px;
+}
 </style>
 </head>
-<body class="max-w-md mx-auto">
-
-<!-- TERMS MODAL -->
-<div id="termsModal" class="modal hidden">
-<div class="bg-white text-black p-6 rounded max-w-md w-full max-h-[80vh] overflow-y-auto">
-<h2 class="font-bold text-lg mb-3">Terms & Conditions</h2>
-<p class="text-sm mb-4">
-Users must be 13+ years old. You are responsible for content you upload.
-We are not liable for user-generated content.
-Accounts violating rules may be suspended.
-</p>
-<button onclick="acceptTerms()" class="bg-black text-white w-full py-2 rounded">I Agree</button>
-</div>
-</div>
-
-<!-- AUTH -->
-<div id="authScreen" class="p-6">
-<h1 class="text-3xl font-bold text-center mb-6">AskGram World</h1>
-<input id="username" placeholder="Username" class="w-full p-2 mb-3 rounded text-black">
-<input id="email" placeholder="Email" class="w-full p-2 mb-3 rounded text-black">
-<input id="password" type="password" placeholder="Password" class="w-full p-2 mb-3 rounded text-black">
-<input id="dob" type="date" class="w-full p-2 mb-3 rounded text-black">
-<label class="text-sm"><input type="checkbox" id="ageCheck"> I confirm I am 13+ years old</label>
-<button onclick="register()" class="w-full bg-blue-600 mt-3 py-2 rounded">Register</button>
-<button onclick="login()" class="w-full bg-gray-700 mt-2 py-2 rounded">Login</button>
-</div>
-
-<!-- APP -->
-<div id="appScreen" class="hidden">
-
-<!-- NAV -->
-<div class="flex justify-around py-3 border-b border-gray-800">
-<i onclick="showPage('reelsPage')" class="fa-solid fa-film"></i>
-<i onclick="showPage('videoPage')" class="fa-solid fa-play"></i>
-<i onclick="showPage('uploadPage')" class="fa-solid fa-square-plus"></i>
-<i onclick="showPage('profilePage')" class="fa-solid fa-user"></i>
-<i onclick="logout()" class="fa-solid fa-right-from-bracket"></i>
-</div>
-
-<!-- REELS -->
-<div id="reelsPage" class="reels-container">
-<div id="reelsFeed"></div>
-</div>
-
-<!-- YOUTUBE STYLE VIDEOS -->
-<div id="videoPage" class="hidden p-3">
-<div id="videoFeed"></div>
-</div>
-
-<!-- UPLOAD -->
-<div id="uploadPage" class="hidden p-3">
-<input type="file" id="mediaInput" class="mb-2">
-<input id="captionInput" placeholder="Caption..." class="w-full p-2 rounded text-black mb-2">
-<select id="typeSelect" class="w-full p-2 rounded text-black mb-2">
-<option value="reel">Reel</option>
-<option value="video">Video</option>
-</select>
-<button onclick="createPost()" class="w-full bg-green-600 py-2 rounded">Upload</button>
-</div>
-
-<!-- PROFILE -->
-<div id="profilePage" class="hidden p-5">
-<h2 class="text-xl font-bold mb-3">Profile</h2>
-<p id="profileName"></p>
-<button onclick="logout()" class="mt-4 bg-red-600 px-4 py-2 rounded">Logout</button>
-</div>
-
-</div>
-
 <script>
-let users=JSON.parse(localStorage.getItem("users"))||[]
-let posts=JSON.parse(localStorage.getItem("posts"))||[]
-let currentUser=JSON.parse(localStorage.getItem("currentUser"))
 
-if(!localStorage.getItem("termsAccepted")){
-document.getElementById("termsModal").classList.remove("hidden")
+let videos = document.querySelectorAll("video");
+
+const observer = new IntersectionObserver(entries=>{
+entries.forEach(entry=>{
+if(entry.isIntersecting){
+entry.target.play();
+}else{
+entry.target.pause();
+}
+});
+},{threshold:0.7});
+
+videos.forEach(video=>{
+observer.observe(video);
+});
+
+function like(el){
+let count = el.querySelector("span");
+count.innerText = parseInt(count.innerText)+1;
 }
 
-function acceptTerms(){
-localStorage.setItem("termsAccepted","yes")
-document.getElementById("termsModal").classList.add("hidden")
-}
+</script>
+</body>
+</html>
+<body>
 
-function calculateAge(dob){
-let birth=new Date(dob)
-let diff=Date.now()-birth.getTime()
-let age=new Date(diff).getUTCFullYear()-1970
-return age
-}
+<div class="reels-container" id="reelsContainer">
 
-function register(){
-if(!ageCheck.checked)return alert("Confirm 13+ age")
-if(calculateAge
+<div class="reel">
+<video src="https://www.w3schools.com/html/mov_bbb.mp4" autoplay loop muted></video>
+
+<div class="overlay">
+<h3 class="font-bold">@askgram</h3>
+<p>Welcome to World Class Platform 🔥</p>
+</div>
+
+<div class="side-icons text-white text-center">
+<div ondblclick="like(this)">❤️<br><span>0</span></div>
+<div>💬</div>
+<div>📤</div>
+</div>
+</div>
+
+</div>
