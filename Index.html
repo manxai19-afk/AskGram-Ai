@@ -2,87 +2,145 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AskGram AI</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AskGram - AI Social Brand</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        .page { display: none; }
-        .active { display: block; }
-        body { background-color: black; color: white; }
+        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #000; color: white; }
+        .reels-container { height: 100vh; overflow-y: scroll; scroll-snap-type: y mandatory; -webkit-overflow-scrolling: touch; }
+        .reel { height: 100vh; width: 100%; scroll-snap-align: start; position: relative; display: flex; align-items: center; justify-content: center; background: #000; }
+        .glass { background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .page { display: none; height: 100vh; width: 100%; position: absolute; top: 0; left: 0; z-index: 100; background: black; }
+        .active-page { display: block; animation: slideUp 0.3s ease; }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        .typing-dot { width: 6px; height: 6px; background: #aaa; border-radius: 50%; animation: blink 1.4s infinite; }
+        @keyframes blink { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
     </style>
 </head>
 <body>
 
-    <header class="flex justify-between items-center p-4 border-b border-gray-800 sticky top-0 bg-black z-50">
-        <h1 class="text-2xl font-bold bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent italic">AskGram</h1>
-        <i class="fa-regular fa-heart text-xl"></i>
-    </header>
-
-    <main class="pb-20">
-        <div id="home" class="page active p-4">
-            <div id="feed" class="space-y-4">
-                <div class="bg-gray-900 p-10 rounded-3xl text-center border border-gray-800">
-                    <p class="text-gray-400 italic">Welcome to AskGram World Brand ✨</p>
-                    <p class="text-xs mt-2 text-gray-600">Swipe up feature coming soon!</p>
-                </div>
+    <div id="home" class="reels-container">
+        <div class="reel">
+            <div class="text-center p-8">
+                <h1 class="text-4xl font-black italic bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 bg-clip-text text-transparent mb-2">AskGram</h1>
+                <p class="text-gray-500 text-sm tracking-widest uppercase">Welcome, Manan. Swipe Up ✨</p>
+            </div>
+            <div class="absolute bottom-24 left-5">
+                <p class="font-bold text-sm">@askgram_official</p>
+                <p class="text-xs text-gray-300">World's first AI-driven social brand.</p>
             </div>
         </div>
+    </div>
 
-        <div id="studio" class="page p-6">
-            <div class="bg-gray-900 p-6 rounded-3xl border border-gray-800">
-                <h2 class="font-bold mb-4">AI Video Studio</h2>
-                <textarea id="prompt" class="w-full bg-black border border-gray-700 rounded-xl p-3 text-sm mb-4 outline-none" rows="4" placeholder="Describe your video idea..."></textarea>
-                <button onclick="generateVideo()" id="genBtn" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 py-3 rounded-xl font-bold">Generate ✨</button>
+    <div id="studio" class="page flex items-center justify-center p-6">
+        <div class="glass w-full max-w-md p-8 rounded-[40px] shadow-2xl">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-black">AI Creation Studio</h2>
+                <i onclick="closePage('studio')" class="fa-solid fa-xmark text-xl text-gray-500"></i>
+            </div>
+            <textarea id="aiPrompt" class="w-full bg-black/40 border border-white/10 rounded-3xl p-5 text-sm focus:border-purple-500 outline-none transition mb-6" rows="4" placeholder="Ask AI to create something viral..."></textarea>
+            <button onclick="askGemini()" id="magicBtn" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 py-4 rounded-full font-black text-lg shadow-lg active:scale-95 transition">
+                GENERATE MAGIC ✨
+            </button>
+        </div>
+    </div>
+
+    <div id="profile" class="page p-8 overflow-y-auto">
+        <div class="flex justify-between items-center mb-10">
+            <h2 class="text-xl font-bold">Creator Dashboard</h2>
+            <i onclick="closePage('profile')" class="fa-solid fa-chevron-down"></i>
+        </div>
+        <div class="flex items-center gap-5 mb-12">
+            <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-yellow-400 to-pink-600 p-1">
+                <div class="w-full h-full bg-black rounded-full flex items-center justify-center text-3xl font-bold italic">M</div>
+            </div>
+            <div>
+                <h2 class="text-2xl font-black">Manan</h2>
+                <p class="text-gray-500 text-xs">Premium AI Creator</p>
             </div>
         </div>
-
-        <div id="profile" class="page p-6 text-center">
-            <div class="w-20 h-20 bg-gradient-to-tr from-yellow-400 to-pink-500 rounded-full mx-auto mb-4 flex items-center justify-center text-2xl font-bold">M</div>
-            <h2 class="text-xl font-bold">Manan</h2>
-            <div class="mt-8 bg-gray-900 p-6 rounded-3xl border border-green-900/30">
-                <p class="text-xs text-green-500 font-bold uppercase">Balance</p>
-                <h3 id="earnings" class="text-4xl font-bold">$0.00</h3>
-            </div>
+        <div class="glass p-8 rounded-[40px] text-center mb-6">
+            <p class="text-[10px] text-green-500 font-bold uppercase tracking-[0.2em] mb-2">Available Earnings</p>
+            <h3 id="balanceDisplay" class="text-5xl font-black font-mono">$0.00</h3>
+            <button class="w-full mt-8 bg-green-600 py-4 rounded-3xl font-bold text-sm">Withdraw Cash</button>
         </div>
-    </main>
+    </div>
 
-    <nav class="fixed bottom-0 w-full bg-black border-t border-gray-800 flex justify-around py-4 text-2xl">
-        <i onclick="show('home')" class="fa-solid fa-house cursor-pointer"></i>
-        <i onclick="show('studio')" class="fa-solid fa-square-plus text-purple-500 cursor-pointer"></i>
-        <i onclick="show('profile')" class="fa-solid fa-circle-user cursor-pointer text-gray-600"></i>
+    <nav class="fixed bottom-0 w-full bg-black/80 backdrop-blur-lg border-t border-white/5 flex justify-around py-5 text-2xl z-[200]">
+        <i onclick="window.scrollTo(0,0); closePage('studio'); closePage('profile')" class="fa-solid fa-house cursor-pointer text-white"></i>
+        <i class="fa-solid fa-magnifying-glass text-gray-600"></i>
+        <i onclick="openPage('studio')" class="fa-solid fa-square-plus text-purple-500 cursor-pointer"></i>
+        <i class="fa-solid fa-clapperboard text-gray-600"></i>
+        <i onclick="openPage('profile')" class="fa-solid fa-circle-user text-gray-600 cursor-pointer"></i>
     </nav>
 
-    <script>
-        let money = 0;
+    <script type="module">
+        import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
 
-        function show(id) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-        }
+        // CONFIG: APNI API KEY YAHAN DAALEIN
+        const API_KEY = "YOUR_GEMINI_API_KEY"; 
+        const genAI = new GoogleGenerativeAI(API_KEY);
+        let wallet = 0.00;
 
-        function generateVideo() {
-            const p = document.getElementById('prompt');
-            const btn = document.getElementById('genBtn');
-            if(!p.value.trim()) return alert("Idea likho!");
+        window.openPage = (id) => document.getElementById(id).classList.add('active-page');
+        window.closePage = (id) => document.getElementById(id).classList.remove('active-page');
 
-            btn.innerText = "AI Thinking...";
-            
-            setTimeout(() => {
-                const feed = document.getElementById('feed');
-                const post = document.createElement('div');
-                post.className = "bg-gray-900 p-5 rounded-3xl border border-gray-800 mb-4";
-                post.innerHTML = `<p class='text-sm mb-4'>${p.value}</p><div class='h-40 bg-black rounded-2xl flex items-center justify-center italic text-gray-700'>Video Processing... 🎥</div>`;
+        window.askGemini = async () => {
+            const promptInput = document.getElementById('aiPrompt');
+            const btn = document.getElementById('magicBtn');
+            const promptText = promptInput.value.trim();
+
+            if (!promptText) return alert("Kuch likhiye Manan!");
+
+            btn.innerHTML = "<div class='flex gap-1 justify-center'><div class='typing-dot'></div><div class='typing-dot' style='animation-delay:0.2s'></div><div class='typing-dot' style='animation-delay:0.4s'></div></div>";
+            btn.disabled = true;
+
+            try {
+                const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+                const result = await model.generateContent(promptText);
+                const response = await result.response;
+                const aiText = response.text();
+
+                // Create New Reel with AI Content
+                const feed = document.getElementById('home');
+                const newReel = document.createElement('div');
+                newReel.className = "reel";
+                newReel.innerHTML = `
+                    <div class="p-10 text-center max-w-sm">
+                        <p class="text-lg leading-relaxed font-medium mb-4">${aiText.substring(0, 300)}...</p>
+                        <span class="text-[10px] text-purple-400 font-black tracking-widest uppercase">Created by AskGram AI</span>
+                    </div>
+                    <div class="absolute bottom-32 right-6 flex flex-col gap-8 text-2xl">
+                        <i onclick="this.classList.toggle('text-red-500')" class="fa-solid fa-heart cursor-pointer"></i>
+                        <i class="fa-solid fa-comment"></i>
+                        <i class="fa-solid fa-share-nodes text-pink-500"></i>
+                    </div>
+                    <div class="absolute bottom-12 left-5">
+                        <p class="font-bold text-sm">@manan_ai</p>
+                        <p class="text-[10px] text-gray-400">Prompt: ${promptText}</p>
+                    </div>
+                `;
                 
-                feed.prepend(post);
-                money += 1.00;
-                document.getElementById('earnings').innerText = "$" + money.toFixed(2);
+                feed.prepend(newReel);
                 
-                p.value = "";
-                btn.innerText = "Generate ✨";
-                show('home');
-            }, 1500);
-        }
+                // Update Wallet
+                wallet += 1.25;
+                document.getElementById('balanceDisplay').innerText = "$" + wallet.toFixed(2);
+
+                // Success Actions
+                closePage('studio');
+                promptInput.value = "";
+                window.scrollTo(0,0);
+
+            } catch (error) {
+                console.error(error);
+                alert("AI Error! Check API Key.");
+            } finally {
+                btn.innerText = "GENERATE MAGIC ✨";
+                btn.disabled = false;
+            }
+        };
     </script>
 </body>
 </html>
