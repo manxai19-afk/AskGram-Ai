@@ -1,103 +1,30 @@
 <!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AskGram X</title>
-<script src="https://cdn.tailwindcss.com"></script>
-
-<style>
-body{
-margin:0;
-background:black;
-overflow:hidden;
-font-family:sans-serif;
-}
-
-.reels-container{
-height:100vh;
-width:100%;
-overflow-y:scroll;
-scroll-snap-type:y mandatory;
-}
-
-.reel{
-height:100vh;
-scroll-snap-align:start;
-position:relative;
-}
-
-video{
-height:100%;
-width:100%;
-object-fit:cover;
-}
-
-.overlay{
-position:absolute;
-bottom:80px;
-left:15px;
-color:white;
-}
-
-.side-icons{
-position:absolute;
-right:15px;
-bottom:120px;
-display:flex;
-flex-direction:column;
-gap:20px;
-font-size:22px;
-}
-</style>
-</head>
-
-<body>
-
-<div class="reels-container" id="reelsContainer">
-
-<div class="reel">
-<video src="https://www.w3schools.com/html/mov_bbb.mp4" autoplay loop muted></video>
-
-<div class="overlay">
-<h3 class="font-bold">@askgram</h3>
-<p>Welcome to World Class Platform 🔥</p>
-</div>
-
-<div class="side-icons text-white text-center">
-<div ondblclick="like(this)">❤️<br><span>0</span></div>
-<div>💬</div>
-<div>📤</div>
-</div>
-</div>
-
-</div>
-
-<!-- ✅ Script ALWAYS body ke end me -->
-<script>
-
-let videos = document.querySelectorAll("video");
-
-const observer = new IntersectionObserver(entries=>{
-entries.forEach(entry=>{
-if(entry.isIntersecting){
-entry.target.play();
-}else{
-entry.target.pause();
-}
-});
-},{threshold:0.7});
-
-videos.forEach(video=>{
-observer.observe(video);
-});
-
-function like(el){
-let count = el.querySelector("span");
-count.innerText = parseInt(count.innerText)+1;
-}
-
-</script>
-
-</body>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
+    />
+    <title>AskGram</title>
+    <style>
+      /* Prevent scrolling on the body to allow the app to handle it */
+      body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background-color: #000000; /* Matching our Dark Theme */
+      }
+      #root {
+        display: flex;
+        flex: 1;
+        height: 100vh;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/index.js"></script>
+  </body>
 </html>
